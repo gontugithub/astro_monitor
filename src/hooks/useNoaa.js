@@ -5,7 +5,7 @@ el forecast cada 5 minutos, y las alertas cada 2 minutos.
 */
 
 import { useQuery } from '@tanstack/react-query';
-import { getCurrentKp, getKpForecast, getAlerts } from '../services/noaaApi';
+import { getCurrentKp, getKpForecast, getAlerts, getKpHistory } from '../services/noaaApi';
 
 export function useCurrentKp() {
   return useQuery({
@@ -30,5 +30,13 @@ export function useAlerts({ limit = 10 } = {}) {
     queryFn: () => getAlerts({ limit }),
     staleTime: 2 * 60 * 1000,
     refetchInterval: 2 * 60 * 1000,
+  });
+}
+
+export function useKpHistory() {
+  return useQuery({
+    queryKey: ['noaa', 'kp', 'history'],
+    queryFn: getKpHistory,
+    staleTime: 5 * 60 * 1000,
   });
 }

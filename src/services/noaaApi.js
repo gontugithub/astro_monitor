@@ -7,6 +7,19 @@ por eso hacemos raw.slice(1) para saltarla y trabajar solo con los datos reales.
 const PLANETARY_K = 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json';
 const K_FORECAST = 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index-forecast.json';
 const ALERTS = 'https://services.swpc.noaa.gov/products/alerts.json';
+const KP_1HOUR = 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json';
+
+export async function getKpHistory() {
+  const res = await fetch(KP_1HOUR);
+  if (!res.ok) throw new Error(`NOAA Kp history ${res.status}`);
+  const raw = await res.json();
+  if (!Array.isArray(raw) || raw.length < 2) throw new Error('formato inesperado');
+
+  return raw.slice(1).map((row) => ({
+    time: row[0],
+    kp: parseFloat(row[1]),
+  })).filter((p) => !isNaN(p.kp));
+}
 
 export async function getCurrentKp() {
   const res = await fetch(PLANETARY_K);

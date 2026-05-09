@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import {
-  ResponsiveContainer, LineChart, Line,
-  XAxis, YAxis, Tooltip, CartesianGrid, ReferenceLine,
+  ResponsiveContainer, LineChart, Line, BarChart, Bar,
+  XAxis, YAxis, Tooltip, CartesianGrid, ReferenceLine, Cell,
 } from 'recharts';
 import { useTranslation } from '../i18n';
-import { useCurrentKp, useKpForecast, useAlerts } from '../hooks/useNoaa';
+import { useCurrentKp, useKpForecast, useAlerts, useKpHistory } from '../hooks/useNoaa';
 import PageTransition from '../components/PageTransition';
 
 export default function Aurora() {
@@ -12,6 +12,7 @@ export default function Aurora() {
   const kpQuery = useCurrentKp();
   const forecastQuery = useKpForecast();
   const alertsQuery = useAlerts({ limit: 8 });
+  const historyQuery = useKpHistory();
 
   const probability = useMemo(() => {
     const kp = kpQuery.data?.kp ?? 0;
@@ -136,6 +137,117 @@ export default function Aurora() {
               ))}
             </div>
           )}
+        </section>
+
+          {/* Histórico últimas 24h */}
+        <section className="col-span-12 glass-panel rounded-xl p-8">
+          <h2 className="text-xs font-semibold text-on-surface-variant uppercase tracking-widest mb-6 flex items-center gap-2">
+            <span className="material-symbols-outlined text-aurora text-base">history</span>
+            Kp History — Last 24h
+          </h2>
+          {historyQuery.isLoading && <div className="skeleton w-full h-40 rounded-lg" />}
+          {historyQuery.data && (
+            <ResponsiveContainer width="100%" height={180}>
+              <BarChart data={historyQuery.data.slice(-24)}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#2b2a2a" />
+                <XAxis
+                  dataKey="time"
+                  stroke="#c4c7c7"
+                  fontSize={9}
+                  tickFormatter={(v) => v?.slice(11, 16)}
+                />
+                <YAxis domain={[0, 9]} stroke="#c4c7c7" fontSize={10} width={20} />
+                <Tooltip
+                  contentStyle={{
+                    background: '#0a0a0a',
+                    border: '1px solid #444',
+                    borderRadius: '6px',
+                    fontFamily: 'JetBrains Mono',
+                    fontSize: '11px',
+                  }}
+                  labelFormatter={(v) => v?.slice(0, 16)}
+                  formatter={(v) => [`Kp ${v?.toFixed(1)}`, '']}
+                />
+                <ReferenceLine y={5} stroke="#50FFB0" strokeDasharray="3 3" />
+                <Bar dataKey="kp" radius={[3, 3, 0, 0]}>
+                  {historyQuery.data.slice(-24).map((entry, i) => (
+                    <Cell
+                      key={i}
+                      fill={
+                        entry.kp >= 7 ? '#ff4444' :
+                        entry.kp >= 5 ? '#50FFB0' :
+                        entry.kp >= 3 ? '#4facfe' :
+                        '#444748'
+                      }
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+          <div className="flex items-center gap-6 mt-4 text-[10px] font-mono">
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-[#ff4444] inline-block"></span>Severe (≥7)</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-aurora inline-block"></span>Aurora visible (≥5)</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-aurora-blue inline-block"></span>Active (≥3)</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-outline-variant inline-block"></span>Quiet</span>
+          </div>
+        </section>
+
+        {/* Top eventos fuertes */}
+        <section className="col-span-12 glass-panel rounded-xl p-8">
+          <h2 className="text-xs font-semibold text-on-surface-variant uppercase tracking-widest mb-6 flex items-center gap-2">
+            <span className="material-symbols-outlined text-error text-base">bolt</span>
+            Strongest Events — Recent Activity
+          </h2>
+          {historyQuery.data && (() => {
+            const strong = historyQuery.data
+              .filter((p) => p.kp >= 4)
+              .sort((a, b) => b.kp - a.kp)
+              .slice(0, 6);
+
+            if (strong.length === 0) return (
+              <p className="text-on-surface-variant text-sm">
+                🌙 No significant activity recorded in the last 24h. Quiet geomagnetic field.
+              </p>
+            );
+
+            return (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {strong.map((e, i) => (
+                  <div key={i} className={`p-4 rounded-xl border ${
+                    e.kp >= 7 ? 'border-error/40 bg-error/5' :
+                    e.kp >= 5 ? 'border-aurora/40 bg-aurora/5' :
+                    'border-aurora-blue/40 bg-aurora-blue/5'
+                  }`}>
+                    <div className="flex justify-between items-start mb-2">
+                      <span className={`text-2xl font-bold font-mono ${
+                        e.kp >= 7 ? 'text-error' :
+                        e.kp >= 5 ? 'text-aurora' :
+                        'text-aurora-blue'
+                      }`}>
+                        {e.kp.toFixed(1)}
+                      </span>
+                      <span className={`text-[9px] font-semibold uppercase px-2 py-0.5 rounded-full ${
+                        e.kp >= 7 ? 'bg-error/20 text-error' :
+                        e.kp >= 5 ? 'bg-aurora/20 text-aurora' :
+                        'bg-aurora-blue/20 text-aurora-blue'
+                      }`}>
+                        {e.kp >= 7 ? 'SEVERE' : e.kp >= 5 ? 'AURORA' : 'ACTIVE'}
+                      </span>
+                    </div>
+                    <p className="text-[10px] font-mono text-on-surface-variant">
+                      {e.time?.slice(0, 16)}
+                    </p>
+                    <p className="text-[10px] text-on-surface-variant mt-1">
+                      {e.kp >= 7 ? '🔴 Visible at low latitudes' :
+                       e.kp >= 5 ? '🟢 Visible at mid-latitudes' :
+                       '🔵 Visible at high latitudes'}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
         </section>
 
       </div>
