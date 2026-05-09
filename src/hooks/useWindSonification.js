@@ -3,6 +3,8 @@
  El toggle debe llamarse desde un click del usuario porque los navegadores bloquean el audio automático.
 */
 
+// @ai-assisted — Tone.js chain: Noise → Filter → Volume, frequency mapped to wind speed
+
 import { useEffect, useRef, useState, useCallback } from 'react';
 import * as Tone from 'tone';
 

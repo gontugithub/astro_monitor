@@ -2,6 +2,8 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
 import PageTransition from '../components/PageTransition';
 
+// @ai-assisted — Three.js sky dome setup, LST rotation, constellation fly-to with matrixWorld
+
 // Catálogo extendido ~120 estrellas brillantes (Hipparcos)
 const STARS = [
   { name: 'Sirius',         ra: 101.287, dec: -16.716, mag: -1.46 },

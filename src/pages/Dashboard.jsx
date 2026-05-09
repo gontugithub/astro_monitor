@@ -11,6 +11,8 @@ import { useWind } from '../hooks/useWind';
 import { CITIES } from '../services/openMeteoApi';
 import PageTransition, { StaggerGrid, StaggerItem } from '../components/PageTransition';
 
+// @ai-assisted — Canvas 2D wind particle field with vector noise + real wind direction
+
 // ── Mini espiral de viento (Canvas 2D) ──────────────────────────────
 function WindSpiral({ speed = 10, direction = 180 }) {
   const canvasRef = useRef(null);

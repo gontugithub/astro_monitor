@@ -15,6 +15,8 @@ muestra el globo 3D con marcadores en las 10 ciudades — el seleccionado aparec
 Al hacer click en un marcador cambia la ciudad activa, actualiza los datos de viento y el chart de las próximas 24h.
 */
 
+// @ai-assisted
+
 export default function Wind() {
   const { t } = useTranslation();
   const [selectedCity, setSelectedCity] = useState(CITIES[0]);

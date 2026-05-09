@@ -1,6 +1,8 @@
 /* construye la URL con los parámetros correctos y llama a Open-Meteo para obtener viento horario de cualquier coordenada. 
 Normaliza la respuesta en un array de puntos {time, speed, direction, gusts} fácil de usar en los charts. */
 
+// @ai-assisted — URLSearchParams construction and response normalization
+
 const BASE_URL = 'https://api.open-meteo.com/v1/forecast';
 
 export async function getWindForecast({ lat, lon, hours = 48 }) {

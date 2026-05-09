@@ -9,6 +9,8 @@ const K_FORECAST = 'https://services.swpc.noaa.gov/products/noaa-planetary-k-ind
 const ALERTS = 'https://services.swpc.noaa.gov/products/alerts.json';
 const KP_1HOUR = 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json';
 
+// @ai-assisted — NOAA array format normalization (header in row 0)
+
 export async function getKpHistory() {
   const res = await fetch(KP_1HOUR);
   if (!res.ok) throw new Error(`NOAA Kp history ${res.status}`);
