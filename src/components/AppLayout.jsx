@@ -17,6 +17,7 @@ export default function AppLayout() {
     { to: `/${locale}/dashboard`, icon: 'dashboard', label: t('nav.dashboard') },
     { to: `/${locale}/wind`, icon: 'air', label: t('nav.wind') },
     { to: `/${locale}/aurora`, icon: 'auto_awesome', label: t('nav.aurora') },
+    { to: `/${locale}/stellarium`, icon: 'stars', label: 'Stellarium' },
   ];
 
   return (
