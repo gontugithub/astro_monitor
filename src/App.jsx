@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Wind from './pages/Wind';
 import Aurora from './pages/Aurora';
+import Stellarium from './pages/Stellarium';
 import AppLayout from './components/AppLayout';
 
 /*
@@ -46,6 +47,7 @@ export default function App() {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="wind" element={<Wind />} />
         <Route path="aurora" element={<Aurora />} />
+        <Route path="stellarium" element={<Stellarium />} />
         <Route index element={<Navigate to="dashboard" replace />} />
       </Route>
       <Route path="*" element={<Navigate to="/en/dashboard" replace />} />

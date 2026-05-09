@@ -116,6 +116,42 @@ export default function Dashboard() {
           </Link>
         </StaggerItem>
 
+        {/* Widget Stellarium */}
+        <StaggerItem className="col-span-12 md:col-span-6">
+          <Link
+            to={`/${locale}/stellarium`}
+            className="glass-panel rounded-xl p-8 min-h-[200px] flex items-center gap-8 hover:bg-white/5 transition-all neon-border-glow group block"
+          >
+            <div className="relative w-32 h-32 flex items-center justify-center flex-shrink-0">
+              {/* Cúpula decorativa */}
+              <div className="absolute inset-0 rounded-full border border-aurora/20 animate-pulse-slow"></div>
+              <div className="absolute inset-4 rounded-full border border-aurora/10"></div>
+              <div className="absolute inset-8 rounded-full border border-aurora/5"></div>
+              <span className="material-symbols-outlined text-aurora text-5xl z-10"
+                style={{ textShadow: '0 0 20px rgba(80,255,176,0.6)' }}>
+                auto_awesome
+              </span>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-xs font-semibold text-on-surface-variant uppercase tracking-widest mb-2">
+                Stellarium 3D
+              </h3>
+              <p className="text-sm text-on-surface leading-relaxed">
+                🌌 Real-time star dome — {new Date().toUTCString().slice(0, 16)}
+              </p>
+              <div className="flex items-center gap-2 mt-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-aurora animate-pulse inline-block"></span>
+                <span className="text-[10px] font-mono text-aurora/70">LIVE ENGINE ACTIVE</span>
+              </div>
+              <span className="inline-flex items-center gap-1 text-[10px] font-mono text-primary mt-3 opacity-70 group-hover:opacity-100">
+                Open dome
+                <span className="material-symbols-outlined text-sm">arrow_forward</span>
+              </span>
+            </div>
+          </Link>
+        </StaggerItem>
+
+
         {/* Widget Alerts */}
         <StaggerItem className="col-span-12">
           <section className="glass-panel rounded-xl p-6">
